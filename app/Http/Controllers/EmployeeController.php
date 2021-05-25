@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Employee;
 use App\Http\Resources\Employee as EmployeeResource;
 use App\Http\Controllers\BaseController as BaseController;
+use Exception;
+use Validator;
 
 class EmployeeController extends BaseController
 {
@@ -16,10 +18,16 @@ class EmployeeController extends BaseController
      */
     public function index()
     {
-        $all_employee = Employee::all();
-        // return response()->json($all_employee);
-        // return response()->json(EmployeeResource::collection($all_employee));
-        return $this->sendResponse(EmployeeResource::collection($all_employee),'all employees');
+        try{
+            $all_employee = Employee::all();
+            if(! count($all_employee) > 0){
+                throw new Exception("No employee found");
+            }
+            return $this->sendResponse(EmployeeResource::collection($all_employee),'all employees');
+        }
+        catch(Exception $e){
+            return $this->sendError($e->getMessage());
+        }
     }
 
     /**
@@ -51,7 +59,23 @@ class EmployeeController extends BaseController
      */
     public function show($id)
     {
-        return 'showsingle employee';
+        try{
+            $employee = Employee::find($id);
+            // return response()->json($employee);
+            // exit;
+            if(! $employee){
+                throw new Exception("Employee data not found!");
+            }
+            if($employee->photo ==''){
+                $employee->photo = 'default.jpg';
+            }
+            // $employee->photo = secure_asset('images/'.$employee->photo);
+            $employee->photo = asset('images/'.$employee->photo);
+            return $this->sendResponse(new EmployeeResource($employee),'single employee');
+        }
+        catch(Exception $e){
+            return $this->sendError($e->getMessage());
+        }
     }
 
     /**
@@ -85,6 +109,16 @@ class EmployeeController extends BaseController
      */
     public function destroy($id)
     {
-        return 'Delete employee';
+        try{
+            $employee = Employee::find($id);
+            if(is_null($employee)){
+                throw new Exception("Employee delete failed");
+            }
+            $employee->delete();
+            return $this->sendResponse($employee, 'Employee deleted successfully.');
+        }
+        catch(Exception $e){
+            return $this->sendError($e->getMessage());
+        }  
     }
 }

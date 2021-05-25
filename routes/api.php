@@ -24,11 +24,9 @@ Route::get('/test', function () {
     return 'Hello World';
 });
 
-Route::get("/login", [LoginController::class, 'create']);
 Route::post("/login", [LoginController::class, 'login']);
-Route::get("/logout", [LoginController::class, 'logout']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
-Route::apiResource('/employee', EmployeeController::class);
+Route::resource('/employee', EmployeeController::class);
 });
 

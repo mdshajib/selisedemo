@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\BaseController as BaseController;
 use Exception;
 
+
 class LoginController extends BaseController
 {
 	public function create(Request $request)
