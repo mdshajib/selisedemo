@@ -9,6 +9,7 @@ use App\Http\Controllers\BaseController as BaseController;
 use Exception;
 use Validator;
 use Input;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class EmployeeController extends BaseController
 {
@@ -55,7 +56,7 @@ class EmployeeController extends BaseController
                 'email'       => 'required|email',
                 'phone'       => 'required',
                 'address'     => 'required',
-                'photo'       => 'required',
+                'photo'       => 'required|image|mimes:jpeg,png,jpg|max:2048',
                 'designation' => 'required'
             ]);
             if($validator->fails()){
@@ -65,7 +66,6 @@ class EmployeeController extends BaseController
             $employeeData['email']       = $request->input('email');
             $employeeData['phone']       = $request->input('phone');
             $employeeData['address']     = $request->input('address');
-            $employeeData['photo']       = $request->input('photo');
             $employeeData['designation'] = $request->input('designation');
 
             $employee = Employee::where('email',$request->input('email'))
@@ -74,6 +74,11 @@ class EmployeeController extends BaseController
             if($employee){
                 throw new Exception('Employee already exist with email/phone!!');
             }
+            $image       = $request->file('photo');
+            $image_name  = time().'.'.$image->extension();
+            $destination = public_path('/images');
+            Image::make($image)->resize(300, 300)->save($destination.'/'.$image_name);
+            $employeeData['photo'] = $image_name;
             $employee = Employee::create($employeeData);
             if(! $employee){
                 throw new Exception('Employee data not inserted!!');
