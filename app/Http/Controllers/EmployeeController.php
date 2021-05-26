@@ -38,7 +38,7 @@ class EmployeeController extends BaseController
      */
     public function create()
     {
-        return 'create employee';
+        //
     }
 
     /**
@@ -68,6 +68,12 @@ class EmployeeController extends BaseController
             $employeeData['photo']       = $request->input('photo');
             $employeeData['designation'] = $request->input('designation');
 
+            $employee = Employee::where('email',$request->input('email'))
+                        ->orWhere('phone',$request->input('phone'))
+                        ->first();
+            if($employee){
+                throw new Exception('Employee already exist with email/phone!!');
+            }
             $employee = Employee::create($employeeData);
             if(! $employee){
                 throw new Exception('Employee data not inserted!!');
@@ -115,7 +121,7 @@ class EmployeeController extends BaseController
      */
     public function edit($id)
     {
-        return 'edit employee';
+        //
     }
 
     /**

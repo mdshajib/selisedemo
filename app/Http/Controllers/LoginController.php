@@ -11,10 +11,6 @@ use Exception;
 
 class LoginController extends BaseController
 {
-	public function create(Request $request)
-    {
-    	return 'Login Form';
-    }
 
     public function login(Request $request)
     {
