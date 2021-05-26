@@ -21,12 +21,13 @@ use App\Http\Controllers\EmployeeController;
 // });
 
 Route::get('/test', function () {
-    return 'Hello World';
+    return 'Hello World2';
 });
 
 Route::post("/login", [LoginController::class, 'login']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
+Route::get("/employee/search", [EmployeeController::class, 'searchEmployee']);
 Route::resource('/employee', EmployeeController::class);
 });
 

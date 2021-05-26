@@ -14,13 +14,17 @@ class Employee extends JsonResource
      */
     public function toArray($request)
     {
+        if($this->photo ==''){
+            $this->photo = 'default.jpg';
+        }
+
         return [
             'id'          => $this->id,
             'name'        => $this->name,
             'email'       => $this->email,
             'phone'       => $this->phone,
             'address'     => $this->address,
-            'photo'       => $this->photo,
+            'photo'       => asset('images/'.$this->photo),
             'designation' => $this->designation
         ];
     }

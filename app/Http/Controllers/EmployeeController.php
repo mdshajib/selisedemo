@@ -32,6 +32,7 @@ class EmployeeController extends BaseController
         }
     }
 
+
     /**
      * Show the form for creating a new resource.
      *
@@ -83,7 +84,6 @@ class EmployeeController extends BaseController
             if(! $employee){
                 throw new Exception('Employee data not inserted!!');
             }
-            $employee->photo = asset('images/'.$employee->photo);
             return $this->sendResponse(new EmployeeResource($employee),'insert success');
         }
         catch(Exception $e){
@@ -101,16 +101,10 @@ class EmployeeController extends BaseController
     {
         try{
             $employee = Employee::find($id);
-            // return response()->json($employee);
-            // exit;
             if(! $employee){
                 throw new Exception("Employee data not found!");
             }
-            if($employee->photo ==''){
-                $employee->photo = 'default.jpg';
-            }
             // $employee->photo = secure_asset('images/'.$employee->photo);
-            $employee->photo = asset('images/'.$employee->photo);
             return $this->sendResponse(new EmployeeResource($employee),'single employee');
         }
         catch(Exception $e){
@@ -186,4 +180,31 @@ class EmployeeController extends BaseController
             return $this->sendError($e->getMessage());
         }  
     }
+
+
+    /**
+     * Search employee.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function searchEmployee(Request $request)
+    {
+        try{
+            $keyword = $request->input('keyword');
+            $employee = Employee::where('email','like','%'.$keyword.'%')
+                        ->orWhere('name','like','%'.$keyword.'%')
+                        ->orWhere('phone','like','%'.$keyword.'%')
+                        ->orWhere('designation','like','%'.$keyword.'%')
+                        ->get();
+
+            if(!count($employee) > 0){
+                throw new Exception("No match found!!!");
+            }
+            return $this->sendResponse(EmployeeResource::collection($employee), 'Match found!!.');
+        }
+        catch(Exception $e){
+            return $this->sendError($e->getMessage());
+        }
+    }
+    
 }
