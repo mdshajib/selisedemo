@@ -8,6 +8,7 @@ use App\Http\Resources\Employee as EmployeeResource;
 use App\Http\Controllers\BaseController as BaseController;
 use Exception;
 use Validator;
+use Input;
 
 class EmployeeController extends BaseController
 {
@@ -48,7 +49,35 @@ class EmployeeController extends BaseController
      */
     public function store(Request $request)
     {
-        return 'Store employee in list';
+        try{
+            $validator = Validator::make($request->all(), [
+                'name'        => 'required',
+                'email'       => 'required|email',
+                'phone'       => 'required',
+                'address'     => 'required',
+                'photo'       => 'required',
+                'designation' => 'required'
+            ]);
+            if($validator->fails()){
+                throw new Exception($validator->errors());
+            }
+            $employeeData['name']        = $request->input('name');
+            $employeeData['email']       = $request->input('email');
+            $employeeData['phone']       = $request->input('phone');
+            $employeeData['address']     = $request->input('address');
+            $employeeData['photo']       = $request->input('photo');
+            $employeeData['designation'] = $request->input('designation');
+
+            $employee = Employee::create($employeeData);
+            if(! $employee){
+                throw new Exception('Employee data not inserted!!');
+            }
+            $employee->photo = asset('images/'.$employee->photo);
+            return $this->sendResponse(new EmployeeResource($employee),'insert success');
+        }
+        catch(Exception $e){
+            return $this->sendError($e->getMessage());
+        }
     }
 
     /**
@@ -98,7 +127,32 @@ class EmployeeController extends BaseController
      */
     public function update(Request $request, $id)
     {
-        return 'update employee data';
+        try{
+            $validator = Validator::make($request->all(), [
+                'name'        => 'required',
+                'email'       => 'required|email',
+                'phone'       => 'required',
+                'address'     => 'required',
+                'designation' => 'required'
+            ]);
+            if($validator->fails()){
+                throw new Exception($validator->errors());
+            }
+            $employee = Employee::find($id);
+            if(! $employee){
+                throw new Exception("Employe data not found");
+            }
+            $employee->name        = $request->input('name');
+            $employee->email       = $request->input('email');
+            $employee->phone       = $request->input('phone');
+            $employee->address     = $request->input('address');
+            $employee->designation = $request->input('designation');
+            $employee->save();
+            return $this->sendResponse(new EmployeeResource($employee),'Employee Updated!!!');
+        }
+        catch(Exception $e){
+            return $this->sendError($e->getMessage());
+        }
     }
 
     /**
@@ -115,7 +169,7 @@ class EmployeeController extends BaseController
                 throw new Exception("Employee delete failed");
             }
             $employee->delete();
-            return $this->sendResponse($employee, 'Employee deleted successfully.');
+            return $this->sendResponse('', 'Employee deleted successfully.');
         }
         catch(Exception $e){
             return $this->sendError($e->getMessage());
