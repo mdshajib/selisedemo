@@ -25,7 +25,9 @@ class Employee extends JsonResource
             'phone'       => $this->phone,
             'address'     => $this->address,
             'photo'       => asset('images/'.$this->photo),
-            'designation' => $this->designation
+            'designation' => $this->designation,
+            'department'  => $this->department,
+            'joining_date'=> $this->joining_date
         ];
     }
 }

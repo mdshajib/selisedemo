@@ -21,6 +21,8 @@ class CreateEmployeesTable extends Migration
             $table->string('address');
             $table->string('designation');
             $table->string('photo');
+            $table->string('department');
+            $table->date('joining_date');
             $table->timestamps();
         });
     }

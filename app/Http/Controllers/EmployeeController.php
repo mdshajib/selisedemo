@@ -58,7 +58,9 @@ class EmployeeController extends BaseController
                 'phone'       => 'required',
                 'address'     => 'required',
                 'photo'       => 'required|image|mimes:jpeg,png,jpg|max:2048',
-                'designation' => 'required'
+                'designation' => 'required',
+                'department'  => 'required',
+                'joining_date'=> 'required'
             ]);
             if($validator->fails()){
                 throw new Exception($validator->errors());
@@ -68,6 +70,8 @@ class EmployeeController extends BaseController
             $employeeData['phone']       = $request->input('phone');
             $employeeData['address']     = $request->input('address');
             $employeeData['designation'] = $request->input('designation');
+            $employeeData['department']  = $request->input('department');
+            $employeeData['joining_date']= $request->input('joining_date');
 
             $employee = Employee::where('email',$request->input('email'))
                         ->orWhere('phone',$request->input('phone'))
@@ -133,16 +137,6 @@ class EmployeeController extends BaseController
     public function update(Request $request, $id)
     {
         try{
-            $validator = Validator::make($request->all(), [
-                'name'        => 'required',
-                'email'       => 'required|email',
-                'phone'       => 'required',
-                'address'     => 'required',
-                'designation' => 'required'
-            ]);
-            if($validator->fails()){
-                throw new Exception($validator->errors());
-            }
             $employee = Employee::find($id);
             if(! $employee){
                 throw new Exception("Employe data not found");

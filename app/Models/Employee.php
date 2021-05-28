@@ -14,6 +14,8 @@ class Employee extends Model
         'phone',
         'address',
         'designation',
-        'photo'
+        'photo',
+        'department',
+        'joining_date'
     ];
 }
