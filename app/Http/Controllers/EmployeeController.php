@@ -18,10 +18,21 @@ class EmployeeController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         try{
-            $all_employee = Employee::all();
+        	$where = array();
+        	if($request->input('department')){
+        		$where = array(
+	        		'department' => $request->input('department')
+	        	);
+        	}
+        	if($request->input('designation')){
+        		$where = array_merge($where, [
+        			'designation' => $request->input('designation')
+        		]);
+        	}
+            $all_employee = Employee::where($where)->get();
             if(! count($all_employee) > 0){
                 throw new Exception("No employee found");
             }
@@ -146,6 +157,8 @@ class EmployeeController extends BaseController
             $employee->phone       = $request->input('phone');
             $employee->address     = $request->input('address');
             $employee->designation = $request->input('designation');
+            $employee->department  = $request->input('department');
+            $employee->joining_date= $request->input('joining_date');
             $employee->save();
             return $this->sendResponse(new EmployeeResource($employee),'Employee Updated!!!');
         }
