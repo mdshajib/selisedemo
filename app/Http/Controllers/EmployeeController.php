@@ -152,13 +152,27 @@ class EmployeeController extends BaseController
             if(! $employee){
                 throw new Exception("Employe data not found");
             }
-            $employee->name        = $request->input('name');
-            $employee->email       = $request->input('email');
-            $employee->phone       = $request->input('phone');
-            $employee->address     = $request->input('address');
-            $employee->designation = $request->input('designation');
-            $employee->department  = $request->input('department');
-            $employee->joining_date= $request->input('joining_date');
+            if($request->input('name')){
+                $employee->name        = $request->input('name');
+            }
+            if($request->input('email')){
+                $employee->email       = $request->input('email');
+            }
+            if($request->input('phone')){
+                $employee->phone       = $request->input('phone');
+            }
+            if($request->input('address')){
+                $employee->address     = $request->input('address');
+            }
+            if($request->input('designation')){
+                $employee->designation = $request->input('designation');
+            }
+            if($request->input('department')){
+                $employee->department  = $request->input('department');
+            }
+            if($request->input('joining_date')){
+                $employee->joining_date= $request->input('joining_date');
+            }
             $employee->save();
             return $this->sendResponse(new EmployeeResource($employee),'Employee Updated!!!');
         }
