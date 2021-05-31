@@ -26,7 +26,7 @@ class LoginController extends BaseController
 	    	if (! $user || ! Hash::check($request->password, $user->password)) {
 	        	throw new Exception('The provided credentials are incorrect.');
 	    	}
-	    	$token = $user->createToken('my-app-token')->plainTextToken;
+	    	$token = $user->createToken('access_token')->plainTextToken;
 	    	$response = [
 	    		'user'         => $user,
 	    		'access_token' => $token
@@ -41,6 +41,7 @@ class LoginController extends BaseController
 
     public function logout(Request $request)
     {
-    	return ' logout';
+    	auth()->user()->tokens()->delete();
+    	return $this->sendResponse('','logout Success');
     }
 }
